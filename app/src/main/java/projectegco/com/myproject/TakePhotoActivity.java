@@ -19,7 +19,9 @@ import android.widget.ListView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TakePhotoActivity extends AppCompatActivity {
@@ -28,7 +30,10 @@ public class TakePhotoActivity extends AppCompatActivity {
     private ArrayAdapter<Photo> photoArrayAdapter;
     private DataSource dataSource;
     protected List<Photo> data = new ArrayList<>();
-    private String imagePath;
+    public static String absolutePath = "absolutePath";
+    String currentDateTime;
+    protected static final String selectedSubject = "subject";
+
 
 
     @Override
@@ -47,13 +52,13 @@ public class TakePhotoActivity extends AppCompatActivity {
         }
 
         //Set Listview
-        dataSource = new DataSource(this);
-        dataSource.open();
-        data = dataSource.getAllResults();
-        photoArrayAdapter = new CustomAdapter(this,0,data);
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
+//        dataSource = new DataSource(this);
+//        dataSource.open();
+//        data = dataSource.getAllResults();
+//        photoArrayAdapter = new CustomAdapter(this,0,data);
+//
+//        ListView listView = (ListView) findViewById(R.id.listView);
+//        listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
     }
 
     private boolean hasCamera(){
@@ -66,16 +71,6 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     //get photo
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-//        photoView = (ImageView)findViewById(R.id.photoView);
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-//            Bundle extras = data.getExtras();
-//            Bitmap bitmap = (Bitmap)extras.get("data");
-//            photoView.setImageBitmap(bitmap);
-//        }
-//    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
@@ -85,8 +80,24 @@ public class TakePhotoActivity extends AppCompatActivity {
 
             // CALL THIS METHOD TO GET THE ACTUAL PATH
             File finalFile = new File(getRealPathFromURI(tempUri));
+            absolutePath = finalFile.getAbsolutePath();
+
+            //Get Current time
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+            currentDateTime = dateFormat.format(new Date());
+
+//            dataSource.open();
+            String getSubject = getIntent().getStringExtra(selectedSubject);
+
+            //put value into Photo table
+           // Photo photo1 = dataSource.createPhoto(absolutePath,getSubject,currentDateTime);
+           // photoArrayAdapter.add(photo1);
+          //  photoArrayAdapter.notifyDataSetChanged();
 
             System.out.println("xxfinalfile: "+finalFile);
+            System.out.println("xxab: "+absolutePath);
+            System.out.println("xxsubject: "+getSubject);
+            System.out.println("xxdate: "+currentDateTime);
         }
     }
 
