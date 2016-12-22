@@ -13,8 +13,6 @@ public class ResultExcelActivity extends AppCompatActivity  {
         setTitle("Result");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
-
-
     }
 
     @Override

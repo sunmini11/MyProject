@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,9 +31,10 @@ public class TakePhotoActivity extends AppCompatActivity {
     private ArrayAdapter<Photo> photoArrayAdapter;
     private DataSource dataSource;
     protected List<Photo> data = new ArrayList<>();
-    public static String absolutePath = "absolutePath";
+    public String absolutePath;
     String currentDateTime;
     protected static final String selectedSubject = "subject";
+    TextView subTextView;
 
 
 
@@ -44,6 +46,10 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
 
+        String getSubject = getIntent().getStringExtra(selectedSubject);
+        subTextView =(TextView)findViewById(R.id.subjectTxt);
+        subTextView.setText(getSubject);
+
         FloatingActionButton fabcam = (FloatingActionButton) findViewById(R.id.fabcam);
         FloatingActionButton fabok = (FloatingActionButton) findViewById(R.id.fabok);
 
@@ -52,13 +58,13 @@ public class TakePhotoActivity extends AppCompatActivity {
         }
 
         //Set Listview
-//        dataSource = new DataSource(this);
-//        dataSource.open();
-//        data = dataSource.getAllResults();
-//        photoArrayAdapter = new CustomAdapter(this,0,data);
-//
-//        ListView listView = (ListView) findViewById(R.id.listView);
-//        listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
+        dataSource = new DataSource(this);
+        dataSource.open();
+        data = dataSource.getAllResults();
+        photoArrayAdapter = new CustomAdapter(this,0,data);
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
     }
 
     private boolean hasCamera(){
@@ -75,6 +81,8 @@ public class TakePhotoActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
+            String getSubject = getIntent().getStringExtra(selectedSubject);
+
             // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
             Uri tempUri = getImageUri(getApplicationContext(), photo);
 
@@ -83,21 +91,22 @@ public class TakePhotoActivity extends AppCompatActivity {
             absolutePath = finalFile.getAbsolutePath();
 
             //Get Current time
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
             currentDateTime = dateFormat.format(new Date());
 
-//            dataSource.open();
-            String getSubject = getIntent().getStringExtra(selectedSubject);
+            // put value into Photo table
+            dataSource.open();
+            Photo photo1 = dataSource.createPhoto(absolutePath,getSubject,currentDateTime);
+            photoArrayAdapter.add(photo1);
+            photoArrayAdapter.notifyDataSetChanged();
 
-            //put value into Photo table
-           // Photo photo1 = dataSource.createPhoto(absolutePath,getSubject,currentDateTime);
-           // photoArrayAdapter.add(photo1);
-          //  photoArrayAdapter.notifyDataSetChanged();
+            Intent intent = new Intent(TakePhotoActivity.this, CustomAdapter.class);
+            intent.putExtra(CustomAdapter.imgPath,absolutePath);
 
             System.out.println("xxfinalfile: "+finalFile);
             System.out.println("xxab: "+absolutePath);
-            System.out.println("xxsubject: "+getSubject);
             System.out.println("xxdate: "+currentDateTime);
+            System.out.println("xxdate: "+getSubject);
         }
     }
 

@@ -36,15 +36,12 @@ public class MainActivity extends AppCompatActivity {
         takePhoto = (Button) dialog.findViewById(R.id.takePhotoBtn);
         result = (Button) dialog.findViewById(R.id.resultBtn);
         cancel = (Button) dialog.findViewById(R.id.cancelBtn);
-
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectedSubject = subjectSpinner.getSelectedItem().toString();
                 Toast.makeText(MainActivity.this, "Subject: " + selectedSubject,
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
                 dialog.show();
             }
         });
@@ -53,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, TakePhotoActivity.class);
+                intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
                 startActivity(intent);
             }
         });
@@ -72,6 +70,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }
