@@ -2,13 +2,15 @@ package projectegco.com.myproject;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private Button takePhoto;
     private Button result;
     private Button cancel;
+
+    String selectedSubject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Subject: " + String.valueOf(subjectSpinner.getSelectedItem()),
+                selectedSubject = subjectSpinner.getSelectedItem().toString();
+                Toast.makeText(MainActivity.this, "Subject: " + selectedSubject,
                         Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
                 dialog.show();
             }
         });
@@ -65,4 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

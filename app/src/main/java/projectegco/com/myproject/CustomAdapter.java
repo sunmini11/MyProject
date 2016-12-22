@@ -2,7 +2,6 @@ package projectegco.com.myproject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,13 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
         View view = inflater.inflate(R.layout.listview_row,null);
 
         TextView txt = (TextView)view.findViewById(R.id.imageTxt);
-        txt.setText(photo.getMessage());
+        txt.setText(photo.getSubject());
 
         TextView txtDT = (TextView)view.findViewById(R.id.timestampTxt);
         txtDT.setText(photo.getTimestamp());
 
         ImageView image = (ImageView)view.findViewById(R.id.photoView);
-        int res = context.getResources().getIdentifier(photo.getImgname(),"drawable",context.getPackageName());
+        int res = context.getResources().getIdentifier(photo.getImgpath(),"drawable",context.getPackageName());
         image.setImageResource(res);
         return view;
     }

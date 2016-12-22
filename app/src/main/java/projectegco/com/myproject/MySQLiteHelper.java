@@ -9,19 +9,19 @@ import android.util.Log;
  * Created by dell pc on 21/12/2559.
  */
 public class MySQLiteHelper extends SQLiteOpenHelper {
-    public static final String TABLE_RESULTS = "results"; //table name is used
+    public static final String TABLE_PHOTO = "photo"; //table name is used
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_MESSAGE = "message";
-    public static final String COLUMN_IMGNAME = "imageName";
+    public static final String COLUMN_SUBJECT = "subject";
+    public static final String COLUMN_IMGPATH = "imagePath";
     public static final String COLUMN_TIMESTAMP = "dateTime";
 
-    private static final String DATABASE_NAME = "resultCheck.db"; //database name file SQLite
+    private static final String DATABASE_NAME = "resultPhoto.db"; //database name file SQLite
     private static final int DATABASE_VERSION = 1;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
-            + TABLE_RESULTS + "(" + COLUMN_ID + " integer primary key autoincrement, "+
-            COLUMN_IMGNAME + " text not null,"+ COLUMN_MESSAGE + " text not null,"
+            + TABLE_PHOTO + "(" + COLUMN_ID + " integer primary key autoincrement, "+
+            COLUMN_IMGPATH + " text not null,"+ COLUMN_SUBJECT + " text not null,"
             + COLUMN_TIMESTAMP + " text not null);";
 
     public MySQLiteHelper(Context context) {
@@ -37,7 +37,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { //if update program not always onCreate
         Log.w(MySQLiteHelper.class.getName(),                                  //delete old one add new
                 "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTO);
         onCreate(db);
     }
 }
