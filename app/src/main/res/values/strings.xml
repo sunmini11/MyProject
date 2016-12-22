@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MyProject</string>
+    <string name="subject_prompt">Select Subject</string>
+
+    <string-array name="subject_arrays">
+        <item>EGCO486 Image Processing</item>
+        <item>EGCO428 Mobile Device Programming</item>
+        <item>EGCO463 Pattern Recognition</item>
+    </string-array>
+    <string name="title_activity_camera">CameraActivity</string>
+
+</resources>
