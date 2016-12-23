@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,11 +32,11 @@ public class TakePhotoActivity extends AppCompatActivity {
     private ArrayAdapter<Photo> photoArrayAdapter;
     private DataSource dataSource;
     protected List<Photo> data = new ArrayList<>();
-    public String absolutePath;
+    public static String absolutePath = "path";
     String currentDateTime;
     protected static final String selectedSubject = "subject";
     TextView subTextView;
-
+    ImageView photoView;
 
 
     @Override
@@ -51,7 +52,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         subTextView.setText(getSubject);
 
         FloatingActionButton fabcam = (FloatingActionButton) findViewById(R.id.fabcam);
-        FloatingActionButton fabok = (FloatingActionButton) findViewById(R.id.fabok);
+        FloatingActionButton fabsend = (FloatingActionButton) findViewById(R.id.fabok);
 
         if (!hasCamera()){
             fabcam.setEnabled(false);
@@ -65,6 +66,18 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
+
+        //Click on photo to zoom it
+//        photoView = (ImageView)findViewById(R.id.photoView);
+//        photoView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(TakePhotoActivity.this, "clickimg", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(TakePhotoActivity.this, ZoomPhotoActivity.class);
+//                    startActivity(intent);
+//            }
+//        });
+
     }
 
     private boolean hasCamera(){
@@ -100,8 +113,6 @@ public class TakePhotoActivity extends AppCompatActivity {
             photoArrayAdapter.add(photo1);
             photoArrayAdapter.notifyDataSetChanged();
 
-            Intent intent = new Intent(TakePhotoActivity.this, CustomAdapter.class);
-            intent.putExtra(CustomAdapter.imgPath,absolutePath);
 
             System.out.println("xxfinalfile: "+finalFile);
             System.out.println("xxab: "+absolutePath);
@@ -134,5 +145,10 @@ public class TakePhotoActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

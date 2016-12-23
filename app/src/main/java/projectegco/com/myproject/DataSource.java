@@ -64,6 +64,7 @@ public class DataSource {
 
     public Photo cursorToPhoto(Cursor cursor){ //set value to Photo
         Photo photo = new Photo(cursor.getLong(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+        System.out.println("getdata: "+cursor.getLong(0)+cursor.getString(1)+cursor.getString(2)+cursor.getString(3));
         return photo;
     }
 }

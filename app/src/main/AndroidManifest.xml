@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ResultExcelActivity" />
-        <activity android:name=".TakePhotoActivity"></activity>
+        <activity android:name=".TakePhotoActivity" />
+        <activity android:name=".ZoomPhotoActivity"></activity>
     </application>
 
 </manifest>

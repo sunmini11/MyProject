@@ -20,7 +20,8 @@ import java.util.List;
 public class CustomAdapter extends ArrayAdapter<Photo>{
     Context context;
     List<Photo> objects;
-    public static final String imgPath = "imgpath";
+    String imgPath;
+    DataSource dataSource;
 
     public CustomAdapter(Context context, int resource, List<Photo> objects) {
         super(context, resource, objects);
@@ -34,23 +35,23 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE); //link with interface
         View view = inflater.inflate(R.layout.listview_row,null);
 
-//        TextView txt = (TextView)view.findViewById(R.id.imageTxt);
-//        txt.setText(photo.getSubject());
-
-        TextView txtDT = (TextView)view.findViewById(R.id.timestampTxt); 
+        TextView txtDT = (TextView)view.findViewById(R.id.timestampTxt);
         txtDT.setText(photo.getTimestamp());
 
-       // String getImgpath = getIntent().getStringExtra(imgPath);
+        TextView txtimgname = (TextView)view.findViewById(R.id.imgTextView);
+        txtimgname.setText("img_"+photo.getId());
+        //Set photo
+        imgPath = photo.getImgpath();
+        if (imgPath!=null){
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgPath);
+            ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
+            myImage.setImageBitmap(myBitmap);
+        }
+        else{
+            dataSource.deleteResult(photo);
+        }
 
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgPath);
-        ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
-        myImage.setImageBitmap(myBitmap);
-
-
-        System.out.println("xximgpath"+imgPath);
-//        ImageView image = (ImageView)view.findViewById(R.id.photoView);
-//        String res = photo.getImgpath();
-//        image.setImageResource(res);
+        System.out.println("aaimgpath: "+photo.getId()+photo.getImgpath()+photo.getTimestamp()+photo.getSubject());
         return view;
     }
 }
