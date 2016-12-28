@@ -7,18 +7,19 @@ public class Photo {
     private long id;
     private String imgpath;
     private String timestamp;
-    private String subject;
+    private String subject_id;
 
     public long getId(){return id;}
     public void setId(long id){this.id=id;}
 
-    public Photo(long id,String imgpath,String subject,String timestamp){
+    public Photo(long id,String imgpath,String subject_id,String timestamp){
         this.id = id;
         this.imgpath = imgpath;
         this.timestamp = timestamp;
-        this.subject = subject;
+        this.subject_id = subject_id;
     }
+
     public String getImgpath(){return imgpath;}
     public String getTimestamp(){return timestamp;}
-    public String getSubject(){return subject;}
+    public String getSubject(){return subject_id;}
 }

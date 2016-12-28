@@ -10,8 +10,8 @@
     tools:context="projectegco.com.myproject.MainActivity">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:id="@+id/imageView"
         android:src="@drawable/egco"
         android:layout_alignParentTop="true"
@@ -23,9 +23,9 @@
         android:text="Select Subject"
         android:id="@+id/textView"
         android:textSize="16dp"
-        android:layout_above="@+id/subSpinner"
-        android:layout_alignStart="@+id/subSpinner"
-        android:layout_marginBottom="15dp" />
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
 
     <Spinner
         android:id="@+id/subSpinner"
@@ -33,20 +33,20 @@
         android:layout_height="wrap_content"
         android:entries="@array/subject_arrays"
         android:prompt="@string/subject_prompt"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
-        />
+        android:layout_marginTop="10dp" />
 
     <Button
-        android:layout_width="200dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:text="Submit"
         android:id="@+id/submitButton"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:background="#80b4f9"
         android:textColor="@color/abc_search_url_text_selected"
-        android:layout_below="@+id/subSpinner"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="106dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_marginBottom="42dp" />
 
 </RelativeLayout>

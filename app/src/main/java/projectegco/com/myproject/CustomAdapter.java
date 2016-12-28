@@ -21,7 +21,7 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
     Context context;
     List<Photo> objects;
     String imgPath;
-    DataSource dataSource;
+    PhotoDataSource photoDataSource;
 
     public CustomAdapter(Context context, int resource, List<Photo> objects) {
         super(context, resource, objects);
@@ -42,14 +42,12 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
         txtimgname.setText("img_"+photo.getId());
         //Set photo
         imgPath = photo.getImgpath();
-        if (imgPath!=null){
+        //if (imgPath!=null){
             Bitmap myBitmap = BitmapFactory.decodeFile(imgPath);
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
             myImage.setImageBitmap(myBitmap);
-        }
-        else{
-            dataSource.deleteResult(photo);
-        }
+        //}
+
 
         System.out.println("aaimgpath: "+photo.getId()+photo.getImgpath()+photo.getTimestamp()+photo.getSubject());
         return view;

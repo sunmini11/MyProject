@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dell pc on 21/12/2559.
+ * Created by dell pc on 23/12/2559.
  */
-public class DataSource {
+public class PhotoDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbhelper;
-    private String[] allColumns = {MySQLiteHelper.COLUMN_ID, MySQLiteHelper.COLUMN_IMGPATH, MySQLiteHelper.COLUMN_SUBJECT, MySQLiteHelper.COLUMN_TIMESTAMP};
+    private String[] allColumns = {MySQLiteHelper.COLUMN_IDPH, MySQLiteHelper.COLUMN_IMGPATH, MySQLiteHelper.COLUMN_SUBJECTPH_ID, MySQLiteHelper.COLUMN_TIMESTAMP};
 
-    public DataSource(Context context){
+    public PhotoDataSource(Context context){
         dbhelper = new MySQLiteHelper(context);
     }
 
@@ -29,14 +29,15 @@ public class DataSource {
         dbhelper.close();
     }
 
-    public Photo createPhoto(String imgpath,String subject,String timestamp){
+    public Photo createPhoto(String imgpath,String subjectid,String timestamp){
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_IMGPATH, imgpath);
-        values.put(MySQLiteHelper.COLUMN_SUBJECT, subject);
+        values.put(MySQLiteHelper.COLUMN_SUBJECTPH_ID, subjectid);
         values.put(MySQLiteHelper.COLUMN_TIMESTAMP, timestamp);
         open();
+
         long insertID = database.insert(MySQLiteHelper.TABLE_PHOTO, null, values);
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_PHOTO, allColumns, MySQLiteHelper.COLUMN_ID + "=" + insertID, null, null, null, null);
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_PHOTO, allColumns, MySQLiteHelper.COLUMN_IDPH + "=" + insertID, null, null, null, null);
         cursor.moveToFirst();
         Photo photo = cursorToPhoto(cursor);
         cursor.close();
@@ -46,25 +47,34 @@ public class DataSource {
     public void deleteResult(Photo results){
         long id = results.getId();
         System.out.println("Comment deleted with id: " + id);
-        database.delete(MySQLiteHelper.TABLE_PHOTO, MySQLiteHelper.COLUMN_ID + "=" + id,null);
+        database.delete(MySQLiteHelper.TABLE_PHOTO, MySQLiteHelper.COLUMN_IDPH + "=" + id,null);
     }
 
-    public List<Photo> getAllResults(){
-        List<Photo> results = new ArrayList<Photo>();
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_PHOTO, allColumns, null, null, null, null, null);
+    public List<Photo> getAllPhotos(String subId){
+        List<Photo> ph = new ArrayList<Photo>();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.TABLE_PHOTO
+                + " WHERE " + MySQLiteHelper.COLUMN_SUBJECTPH_ID + "=" + "'" + subId + "'", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
             Photo photo = cursorToPhoto(cursor);
-            results.add(photo);
+            ph.add(photo);
             cursor.moveToNext();
         }
         cursor.close();
-        return results;
+        return ph;
     }
 
     public Photo cursorToPhoto(Cursor cursor){ //set value to Photo
         Photo photo = new Photo(cursor.getLong(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
-        System.out.println("getdata: "+cursor.getLong(0)+cursor.getString(1)+cursor.getString(2)+cursor.getString(3));
+        System.out.println("getphoto: "+cursor.getLong(0)+cursor.getString(1)+cursor.getString(2)+cursor.getString(3));
         return photo;
+    }
+
+    //find selected subject
+    public Cursor findSubject(String sub) {
+
+        Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.TABLE_PHOTO
+                + " WHERE " + MySQLiteHelper.COLUMN_SUBJECTPH_ID + "=" + "'" + sub + "'", null);
+        return cursor;
     }
 }

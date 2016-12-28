@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -21,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private Button cancel;
 
     String selectedSubject;
+    String idselectedSubject;
+    SubjectDataSource subjectDataSource = new SubjectDataSource(this);
+    private ArrayAdapter<Subject> subjectArrayAdapter;
+    Subject subject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +41,23 @@ public class MainActivity extends AppCompatActivity {
         takePhoto = (Button) dialog.findViewById(R.id.takePhotoBtn);
         result = (Button) dialog.findViewById(R.id.resultBtn);
         cancel = (Button) dialog.findViewById(R.id.cancelBtn);
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 selectedSubject = subjectSpinner.getSelectedItem().toString();
+                idselectedSubject = getResources().getStringArray(R.array.subject_arrays_value)[subjectSpinner.getSelectedItemPosition()];
+
                 Toast.makeText(MainActivity.this, "Subject: " + selectedSubject,
                         Toast.LENGTH_SHORT).show();
+                System.out.println("subject: "+selectedSubject+" "+idselectedSubject);
+
+                subjectDataSource.open();
+                subject = subjectDataSource.createSubject(selectedSubject,idselectedSubject);
+                subjectDataSource.open();
+             //   System.out.println("xxxx: "+subject.getId()+subject.getSubjectId()+subject.getSubjectName());
+
                 dialog.show();
             }
         });
@@ -51,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, TakePhotoActivity.class);
                 intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
+                intent.putExtra(TakePhotoActivity.idselectedSubject,idselectedSubject);
                 startActivity(intent);
             }
         });
@@ -69,6 +86,18 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        subjectDataSource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        subjectDataSource.close();
+        super.onPause();
     }
 
 }

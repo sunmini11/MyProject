@@ -1,5 +1,6 @@
 package projectegco.com.myproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,11 +32,12 @@ public class TakePhotoActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ArrayAdapter<Photo> photoArrayAdapter;
-    private DataSource dataSource;
+    private PhotoDataSource photoDataSource;
     protected List<Photo> data = new ArrayList<>();
     public static String absolutePath = "path";
     String currentDateTime;
     protected static final String selectedSubject = "subject";
+    protected static final String idselectedSubject = "subjectid";
     TextView subTextView;
     ImageView photoView;
 
@@ -48,36 +51,37 @@ public class TakePhotoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
 
         String getSubject = getIntent().getStringExtra(selectedSubject);
-        subTextView =(TextView)findViewById(R.id.subjectTxt);
+        String getSubjectID = getIntent().getStringExtra(idselectedSubject);
+
+        subTextView = (TextView) findViewById(R.id.subjectTxt);
         subTextView.setText(getSubject);
 
         FloatingActionButton fabcam = (FloatingActionButton) findViewById(R.id.fabcam);
         FloatingActionButton fabsend = (FloatingActionButton) findViewById(R.id.fabok);
 
-        if (!hasCamera()){
+        if (!hasCamera()) {
             fabcam.setEnabled(false);
         }
 
         //Set Listview
-        dataSource = new DataSource(this);
-        dataSource.open();
-        data = dataSource.getAllResults();
-        photoArrayAdapter = new CustomAdapter(this,0,data);
+        photoDataSource = new PhotoDataSource(this);
+        photoDataSource.open();
+        data = photoDataSource.getAllPhotos(getSubjectID);
+        photoArrayAdapter = new CustomAdapter(this, 0, data);
 
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
 
-        //Click on photo to zoom it
-//        photoView = (ImageView)findViewById(R.id.photoView);
-//        photoView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(TakePhotoActivity.this, "clickimg", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(TakePhotoActivity.this, ZoomPhotoActivity.class);
-//                    startActivity(intent);
-//            }
-//        });
+        photoView = (ImageView)findViewById(R.id.photoView);
 
+        //Click to zoom photo
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                Toast.makeText(getBaseContext(),"aaaaa",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean hasCamera(){
@@ -91,10 +95,11 @@ public class TakePhotoActivity extends AppCompatActivity {
 
     //get photo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
             String getSubject = getIntent().getStringExtra(selectedSubject);
+            String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
             // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
             Uri tempUri = getImageUri(getApplicationContext(), photo);
@@ -107,17 +112,21 @@ public class TakePhotoActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
             currentDateTime = dateFormat.format(new Date());
 
+
             // put value into Photo table
-            dataSource.open();
-            Photo photo1 = dataSource.createPhoto(absolutePath,getSubject,currentDateTime);
+            photoDataSource.open();
+            Photo photo1 = photoDataSource.createPhoto(absolutePath,getSubjectID,currentDateTime);
             photoArrayAdapter.add(photo1);
             photoArrayAdapter.notifyDataSetChanged();
-
 
             System.out.println("xxfinalfile: "+finalFile);
             System.out.println("xxab: "+absolutePath);
             System.out.println("xxdate: "+currentDateTime);
-            System.out.println("xxdate: "+getSubject);
+            System.out.println("xxsubid: "+getSubjectID);
+            System.out.println("xxsub: "+getSubject);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -148,7 +157,14 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        photoDataSource.open();
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
+        photoDataSource.close();
         super.onPause();
     }
 }
