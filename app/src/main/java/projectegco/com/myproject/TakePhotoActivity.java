@@ -160,36 +160,30 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         //Check checkbox and push delete button
         deleteButton = (Button)findViewById(R.id.delBtn);
-        for (int k = 0; k < data.size(); k++) {
-            if(data.get(k).isSelected()){
-                deleteButton.isEnabled();
-            }
-        }
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                msgMultiSelected = new ArrayList<Integer>();
                 AlertDialog.Builder builder = new AlertDialog.Builder(TakePhotoActivity.this); // where dialog appear
                 builder.setMessage("Do you want to delete the items?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    // when ans = yes do this 
+                    // when ans = yes do this
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         for (int j = 0; j < data.size(); j++) {
                             System.out.println(j + "xxxxcheck = " + data.get(j).isSelected());
                             if (data.get(j).isSelected()) {
                                 getFromPhoto = photoArrayAdapter.getItem(j);
-                                photoDataSource.deleteResult(getFromPhoto);
+                                photoDataSource.deleteResult(data.get(j));
 
-                                data = photoDataSource.getAllPhotos(getSubjectID);
-                                photoArrayAdapter = new CustomAdapter(TakePhotoActivity.this, 0, data);
-                                listView.setAdapter(photoArrayAdapter);
+
 
                                 Toast.makeText(TakePhotoActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
                             }
                         }
+                        data = photoDataSource.getAllPhotos(getSubjectID);
+                        photoArrayAdapter = new CustomAdapter(TakePhotoActivity.this, 0, data);
+                        listView.setAdapter(photoArrayAdapter);
                         System.out.println("xxsize: "+data.size());
                     }
                 });
