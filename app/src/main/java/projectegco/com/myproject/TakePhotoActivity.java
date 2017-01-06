@@ -1,22 +1,31 @@
 package projectegco.com.myproject;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ListMenuItemView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +48,15 @@ public class TakePhotoActivity extends AppCompatActivity {
     protected static final String selectedSubject = "subject";
     protected static final String idselectedSubject = "subjectid";
     TextView subTextView;
-    ImageView photoView;
+    Button deleteButton;
+    CheckBox checkBox;
+    ListView listView;
+
+    boolean isSelectAll = true;
+    public static boolean flag = false;
+    CheckBox checkboxAll;
+    ArrayList<Integer> msgMultiSelected;
+
 
 
     @Override
@@ -69,20 +86,148 @@ public class TakePhotoActivity extends AppCompatActivity {
         data = photoDataSource.getAllPhotos(getSubjectID);
         photoArrayAdapter = new CustomAdapter(this, 0, data);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.listView);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setAdapter(photoArrayAdapter); //push data in adapter into listview
-
-        photoView = (ImageView)findViewById(R.id.photoView);
 
         //Click to zoom photo
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
+//                Toast.makeText(TakePhotoActivity.this, "image"+i, Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(TakePhotoActivity.this,ZoomPhotoActivity.class);
+//                intent.putExtra(ImageViewZoom.absolutePath,absolutePath);
+//                startActivity(intent);
+                checkBox = (CheckBox) view.getTag(R.id.checkBox);
+//                if (photoArrayAdapter.getCount() > 0) {
+//
+//                    final Photo p = photoArrayAdapter.getItem(i);
+//                    photoDataSource.deleteResult(p); // delete in database
+//                    view.animate().setDuration(2000).alpha(0).withEndAction(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            photoArrayAdapter.remove(p); // delete in listviewlist.remove(item);
+//                            view.setAlpha(1);
+//                        }
+//                    });
+//                }
 
-                Toast.makeText(getBaseContext(),"aaaaa",Toast.LENGTH_SHORT).show();
+
+
+//                if (checkboxAll.isChecked()){
+//                    System.out.println("hey3");
+//                    for ( int j=0; j< listView.getCount(); j++ ) {
+//                        System.out.println("hey");
+//                        listView.setItemChecked(j, true);
+//                    }
+//                }else {
+//                    System.out.println("hey3");
+//                    for ( int j=0; j< listView.getCount(); j++ ) {
+//                        System.out.println("hey1");
+//                        listView.setItemChecked(j, false);
+//                    }
+//                }
+
+
+
             }
         });
+
+//        //Select All checkbox
+        checkboxAll = (CheckBox)findViewById(R.id.checkBox2);
+        checkboxAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkboxAll.isChecked())
+                {
+//                    checkBox.setChecked(true);
+                    // check all list items
+                    System.out.println("xxx check");
+                    for ( int i=0; i < listView.getChildCount(); i++) {
+                        listView.setItemChecked(i, true);
+                    }
+                }
+                else if(!checkboxAll.isChecked())
+                {
+                    //  unselect all list items
+//                   checkBox.setChecked(false);
+                    System.out.println("xxx uncheck");
+                }
+
+            }
+        });
+
+        //Check checkbox and push delete button
+        deleteButton = (Button)findViewById(R.id.delBtn);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msgMultiSelected = new ArrayList<Integer>();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TakePhotoActivity.this); // where dialog appear
+                builder.setMessage("Do you want to delete the items?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    // when ans = yes do this
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //                        SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
+                        //                        int itemCount = listView.getCount();
+                        //                        for(int j=itemCount-1; j >= 0; j--){
+                        //                            photoArrayAdapter.remove(data.get(j));
+                        ////                            final Photo dataDelete = (Photo) photoArrayAdapter.getItem(j);
+                        ////                            photoDataSource.deleteResult(dataDelete);
+                        //                        }
+                        //
+                        //                        checkedItemPositions.clear();
+                        //                        photoArrayAdapter.notifyDataSetChanged();
+                        //                        Toast.makeText(getApplicationContext(),"Deleted",Toast.LENGTH_SHORT).show();
+                        //                        System.out.println("xxxx "+checkedItemPositions);
+
+                        int cntChoice = listView.getCount();
+
+                        String checked = "";
+
+                        String unchecked = "";
+                        SparseBooleanArray sparseBooleanArray = listView.getCheckedItemPositions();
+
+                        for (int j = 0; j < cntChoice; j++) {
+
+                            if (sparseBooleanArray.get(j) == true) {
+                                msgMultiSelected.add(j);
+                                checked += listView.getItemAtPosition(j).toString() + "\n";
+                                //                                photoArrayAdapter.remove(data.get(j));
+                                System.out.println(j + "xxxxcheck " + checked + "===" + sparseBooleanArray.get(j));
+                            } else if (sparseBooleanArray.get(j) == false) {
+                                msgMultiSelected.remove(Integer.valueOf(j));
+                                unchecked += listView.getItemAtPosition(j).toString() + "\n";
+                                System.out.println(j + "xxxxUNcheck " + unchecked + "===" + sparseBooleanArray.get(j));
+
+                            }
+                        }
+                        System.out.println("xxxx-------"+msgMultiSelected+" (size) "+msgMultiSelected.size()+" item="+cntChoice);
+
+                        for(Integer item:msgMultiSelected){
+                            //delete from list and sqlite database
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+                builder.create();
+                builder.show();
+            }
+        });
+
     }
+
+
+    private String isCheckedorNot(CheckBox checkbox){
+        if(checkbox.isChecked())
+            return "is checked";
+        else
+            return "is not checked";
+    }
+
 
     private boolean hasCamera(){
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
@@ -112,7 +257,6 @@ public class TakePhotoActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
             currentDateTime = dateFormat.format(new Date());
 
-
             // put value into Photo table
             photoDataSource.open();
             Photo photo1 = photoDataSource.createPhoto(absolutePath,getSubjectID,currentDateTime);
@@ -134,7 +278,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        System.out.println("xxpath: "+Uri.parse(path));
+        //System.out.println("xxpath: "+Uri.parse(path));
         return Uri.parse(path);
 
     }

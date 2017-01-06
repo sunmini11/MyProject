@@ -8,6 +8,8 @@ public class Photo {
     private String imgpath;
     private String timestamp;
     private String subject_id;
+    private String phId;
+    private boolean selected;
 
     public long getId(){return id;}
     public void setId(long id){this.id=id;}
@@ -22,4 +24,23 @@ public class Photo {
     public String getImgpath(){return imgpath;}
     public String getTimestamp(){return timestamp;}
     public String getSubject(){return subject_id;}
+
+
+
+    public Photo(String phId) {
+        this.phId = phId;
+    }
+
+    public String getName() {
+        return phId;
+    }
+
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }
