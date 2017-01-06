@@ -43,11 +43,6 @@ public class SubjectDataSource {
         return subject;
     }
 
-    public void deleteResult(Photo results){
-        long id = results.getId();
-        System.out.println("Comment deleted with id: " + id);
-        database.delete(MySQLiteHelper.TABLE_SUBJECT, MySQLiteHelper.COLUMN_ID + "=" + id,null);
-    }
 
     public List<Subject> getAllSubjects(){
         List<Subject> results = new ArrayList<Subject>();

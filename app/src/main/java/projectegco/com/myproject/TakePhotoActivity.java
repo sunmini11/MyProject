@@ -51,6 +51,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     Button deleteButton;
     CheckBox checkBox;
     ListView listView;
+    Photo getFromPhoto;
 
     boolean isSelectAll = true;
     public static boolean flag = false;
@@ -67,8 +68,8 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
 
-        String getSubject = getIntent().getStringExtra(selectedSubject);
-        String getSubjectID = getIntent().getStringExtra(idselectedSubject);
+        final String getSubject = getIntent().getStringExtra(selectedSubject);
+        final String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
         subTextView = (TextView) findViewById(R.id.subjectTxt);
         subTextView.setText(getSubject);
@@ -159,6 +160,11 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         //Check checkbox and push delete button
         deleteButton = (Button)findViewById(R.id.delBtn);
+        for (int k = 0; k < data.size(); k++) {
+            if(data.get(k).isSelected()){
+                deleteButton.isEnabled();
+            }
+        }
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,48 +176,19 @@ public class TakePhotoActivity extends AppCompatActivity {
                     @Override
                     // when ans = yes do this
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //                        SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
-                        //                        int itemCount = listView.getCount();
-                        //                        for(int j=itemCount-1; j >= 0; j--){
-                        //                            photoArrayAdapter.remove(data.get(j));
-                        ////                            final Photo dataDelete = (Photo) photoArrayAdapter.getItem(j);
-                        ////                            photoDataSource.deleteResult(dataDelete);
-                        //                        }
-                        //
-                        //                        checkedItemPositions.clear();
-                        //                        photoArrayAdapter.notifyDataSetChanged();
-                        //                        Toast.makeText(getApplicationContext(),"Deleted",Toast.LENGTH_SHORT).show();
-                        //                        System.out.println("xxxx "+checkedItemPositions);
 
-                        int cntChoice = listView.getCount();
+                        for (int j = 0; j < data.size(); j++) {
+                            System.out.println(j + "xxxxcheck = " + data.get(j).isSelected());
+                            if (data.get(j).isSelected()) {
+                                getFromPhoto = photoArrayAdapter.getItem(j);
+                                photoDataSource.deleteResult(getFromPhoto);
+                                photoArrayAdapter.remove(data.get(j));
 
-                        String checked = "";
-
-                        String unchecked = "";
-                        SparseBooleanArray sparseBooleanArray = listView.getCheckedItemPositions();
-
-                        for (int j = 0; j < cntChoice; j++) {
-
-                            if (sparseBooleanArray.get(j) == true) {
-                                msgMultiSelected.add(j);
-                                checked += listView.getItemAtPosition(j).toString() + "\n";
-                                //                                photoArrayAdapter.remove(data.get(j));
-                                System.out.println(j + "xxxxcheck " + checked + "===" + sparseBooleanArray.get(j));
-                            } else if (sparseBooleanArray.get(j) == false) {
-                                msgMultiSelected.remove(Integer.valueOf(j));
-                                unchecked += listView.getItemAtPosition(j).toString() + "\n";
-                                System.out.println(j + "xxxxUNcheck " + unchecked + "===" + sparseBooleanArray.get(j));
-
+                                Toast.makeText(TakePhotoActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        System.out.println("xxxx-------"+msgMultiSelected+" (size) "+msgMultiSelected.size()+" item="+cntChoice);
-
-                        for(Integer item:msgMultiSelected){
-                            //delete from list and sqlite database
                         }
                     }
                 });
-
                 builder.setNegativeButton("Cancel", null);
                 builder.create();
                 builder.show();

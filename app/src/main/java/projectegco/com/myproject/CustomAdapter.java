@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.Settings;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
     public static boolean checkItem_flag = false;
 
     //Checkbox
-
+    ArrayList<Integer> msgMultiSelected;
 
     public CustomAdapter(Context context, int resource, List<Photo> objects) {
         super(context, resource, objects);
@@ -57,7 +59,11 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     int getPosition = (Integer) buttonView.getTag();  // Here we get the position that we have set for the checkbox using setTag.
                     objects.get(getPosition).setSelected(buttonView.isChecked()); // Set the value of checkbox to maintain its state.
-                    System.out.println("1234 check change");
+                    System.out.println("1234 check change "+getPosition);
+
+                    msgMultiSelected = new ArrayList<Integer>();
+                    msgMultiSelected.add(getPosition);
+
                 }
             });
             view.setTag(viewHolder);
