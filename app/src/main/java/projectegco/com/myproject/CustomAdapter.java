@@ -2,8 +2,11 @@ package projectegco.com.myproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.provider.Settings;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,9 +28,8 @@ import java.util.List;
 public class CustomAdapter extends ArrayAdapter<Photo>{
     Context context;
     List<Photo> objects;
-    String imgPath;
-    boolean checkAll_flag = false;
-    public static boolean checkItem_flag = false;
+    public String imgPath;
+    ImageView photoView;
 
     //Checkbox
     ArrayList<Integer> msgMultiSelected;
@@ -43,11 +46,11 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent){
+    public View getView(final int position, View view, ViewGroup parent){
 
         ViewHolder viewHolder = null;
 //        if (view == null){
-            Photo photo = objects.get(position);
+            final Photo photo = objects.get(position);
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE); //link with interface
             view = inflater.inflate(R.layout.listview_row,null);
 
@@ -77,38 +80,14 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
             txtimgname.setText("img_"+photo.getId());
 
             //Set photo
-            imgPath = photo.getImgpath();
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgPath);
+//            imgPath = photo.getImgpath();
+            Bitmap myBitmap = BitmapFactory.decodeFile(photo.getImgpath());
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
             myImage.setImageBitmap(myBitmap);
 
             //Checkbox
             CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkBox);
             checkBox.isChecked();
-
-        //Select All checkbox
-//        final CheckBox checkboxAll = (CheckBox)view.findViewById(R.id.checkBox2);
-//        checkboxAll.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(checkboxAll.isChecked())
-//                {
-////                    checkBox.setChecked(true);
-//                    // check all list items
-//                    System.out.println("xxx1");
-//
-//
-//                }
-//                else if(!checkboxAll.isChecked())
-//                {
-//                    //  unselect all list items
-////                   checkBox.setChecked(false);
-//                    System.out.println("xxx2");
-//
-//                }
-//            }
-//        });
-
 
 
 //        }else {
@@ -117,9 +96,22 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
 
         viewHolder.checkbox.setTag(position); // This line is important.
 
-//        viewHolder.text.setText(objects.get(position).getName());
         viewHolder.checkbox.setChecked(objects.get(position).isSelected());
 
+
+        //Click to zoom photo
+        photoView = (ImageView)view.findViewById(R.id.photoView);
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("hey click photo");
+                Intent intent = new Intent(context,ZoomPhotoActivity.class);
+                intent.putExtra(ZoomPhotoActivity.ImagePath,photo.getImgpath());
+                context.startActivity(intent);
+                System.out.println("imgpath:"+photo.getImgpath()+" uri:"+imgPath);
+            }
+        });
         return view;
     }
+
 }

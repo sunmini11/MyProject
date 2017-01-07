@@ -198,7 +198,6 @@ public class TakePhotoActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap photo = (Bitmap)extras.get("data");
 
-
             String getSubject = getIntent().getStringExtra(selectedSubject);
             String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
