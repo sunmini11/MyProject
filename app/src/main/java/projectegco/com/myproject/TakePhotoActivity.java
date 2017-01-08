@@ -1,6 +1,7 @@
 package projectegco.com.myproject;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -69,11 +71,14 @@ public class TakePhotoActivity extends AppCompatActivity {
     public static boolean flag = false;
     CheckBox checkboxAll;
     ArrayList<Integer> msgMultiSelected;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+    String filename;
+    Uri imageUri;
+    String imageurl;
+    Bitmap thumbnail;
+
+    ContentValues values;
+
 
 
     @Override
@@ -108,20 +113,6 @@ public class TakePhotoActivity extends AppCompatActivity {
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setItemChecked(4, true);
 
-        //Click to zoom photo
-
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
-//                Toast.makeText(TakePhotoActivity.this, "image"+i, Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(TakePhotoActivity.this,ZoomPhotoActivity.class);
-//                intent.putExtra(ImageViewZoom.absolutePath,absolutePath);
-//                startActivity(intent);
-//                checkBox = (CheckBox) view.getTag(R.id.checkBox);
-//            }
-//        });
-
         //Select All checkbox
         checkboxAll = (CheckBox) findViewById(R.id.checkBox2);
         checkboxAll.setOnClickListener(new View.OnClickListener() {
@@ -142,11 +133,13 @@ public class TakePhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(TakePhotoActivity.this); // where dialog appear
-                builder.setMessage("Do you want to delete the items?");
+                builder.setMessage("Do you want to delete the photos?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     // when ans = yes do this
                     public void onClick(DialogInterface dialogInterface, int i) {
+
+                        photoDataSource.open();
 
                         for (int j = 0; j < data.size(); j++) {
                             System.out.println(j + "xxxxcheck = " + data.get(j).isSelected());
@@ -169,9 +162,6 @@ public class TakePhotoActivity extends AppCompatActivity {
             }
         });
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -188,25 +178,50 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     public void launchCamera(View view) {
+//        int i = 0;
+//        filename = Environment.getExternalStorageDirectory().getPath() + "/storage/sdcard0/ProjectPhoto/img_"+i+".jpg";
+//        imageUri = Uri.fromFile(new File(filename));
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        imageUri = getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
     }
 
     //get photo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
-            Bundle extras = data.getExtras();
-            Bitmap photo = (Bitmap)extras.get("data");
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+//            Bundle extras = data.getExtras();
+//            Bitmap photo = (Bitmap)extras.get("data");
+        System.out.println("printfilename22 "+imageUri);
+        try {
+                thumbnail = MediaStore.Images.Media.getBitmap(
+                        getContentResolver(), imageUri);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//                imgView.setImageBitmap(thumbnail);
+                imageurl = getRealPathFromURI(imageUri);
+            System.out.println("printfilename222 "+imageurl);
+
+        } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             String getSubject = getIntent().getStringExtra(selectedSubject);
             String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
-            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-            Uri tempUri = getImageUri(getApplicationContext(), photo);
-
-            // CALL THIS METHOD TO GET THE ACTUAL PATH
-            File finalFile = new File(getRealPathFromURI(tempUri));
-            absolutePath = finalFile.getAbsolutePath();
+//            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+//            Uri tempUri = getImageUri(getApplicationContext(), photo);
+//
+//            // CALL THIS METHOD TO GET THE ACTUAL PATH
+//            File finalFile = new File(getRealPathFromURI(tempUri));
+//            absolutePath = finalFile.getAbsolutePath();
 
             //Get Current time
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
@@ -214,20 +229,22 @@ public class TakePhotoActivity extends AppCompatActivity {
 
             // put value into Photo table
             photoDataSource.open();
-            Photo photo1 = photoDataSource.createPhoto(absolutePath, getSubjectID, currentDateTime);
+            Photo photo1 = photoDataSource.createPhoto(imageurl, getSubjectID, currentDateTime);
             photoArrayAdapter.add(photo1);
             photoArrayAdapter.notifyDataSetChanged();
 
-            System.out.println("xxfinalfile: "+finalFile);
-            System.out.println("xxab: "+absolutePath);
-            System.out.println("xxdate: "+currentDateTime);
-            System.out.println("xxsubid: "+getSubjectID);
-            System.out.println("xxsub: "+getSubject);
-            System.out.println("xxpath: "+tempUri);
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+//            System.out.println("xxfinalfile: "+finalFile);
+//            System.out.println("xxab: "+absolutePath);
+//            System.out.println("xxdate: "+currentDateTime);
+//            System.out.println("xxsubid: "+getSubjectID);
+//            System.out.println("xxsub: "+getSubject);
+//            System.out.println("xxpath: "+tempUri);
+
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
     }
+
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -239,57 +256,20 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        System.out.println("xxidx: " + cursor.getString(idx));
-        return cursor.getString(idx);
-    }
+//        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+//        cursor.moveToFirst();
+//        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//        System.out.println("xxidx: " + cursor.getString(idx));
+//        return cursor.getString(idx);
 
-    ///////////////////////////////////////////////////////////////////
-//    @Override
-//    protected void onActivityResult(int reqCode, int resCode, Intent data) {
-//        if(resCode == Activity.RESULT_OK && data != null){
-//            String realPath;
-//            // SDK < API11
-//            if (Build.VERSION.SDK_INT < 11)
-//                realPath = RealPhotoPath.getRealPathFromURI_BelowAPI11(this, data.getData());
-//
-//                // SDK >= 11 && SDK < 19
-//            else if (Build.VERSION.SDK_INT < 19)
-//                realPath = RealPhotoPath.getRealPathFromURI_API11to18(this, data.getData());
-//
-//                // SDK > 19 (Android 4.4)
-//            else
-//                realPath = RealPhotoPath.getRealPathFromURI_API19(this, data.getData());
-//
-//
-//            setTextViews(Build.VERSION.SDK_INT, data.getData().getPath(),realPath);
-//        }
-//    }
-//
-//    private void setTextViews(int sdk, String uriPath,String realPath){
-//
-//        Uri uriFromPath = Uri.fromFile(new File(realPath));
-//
-//        // you have two ways to display selected image
-//
-//        // ( 1 ) imageView.setImageURI(uriFromPath);
-//
-//        // ( 2 ) imageView.setImageBitmap(bitmap);
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uriFromPath));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        imageView.setImageBitmap(bitmap);
-//
-//        Log.d("HMKCODE", "Build.VERSION.SDK_INT:"+sdk);
-//        Log.d("HMKCODE", "URI Path:"+uriPath);
-//        Log.d("HMKCODE", "Real Path: "+realPath);
-//    }
-    //////////////////////////////////////////////////////////////////////
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -310,45 +290,5 @@ public class TakePhotoActivity extends AppCompatActivity {
     protected void onPause() {
         photoDataSource.close();
         super.onPause();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "TakePhoto Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://projectegco.com.myproject/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "TakePhoto Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://projectegco.com.myproject/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }

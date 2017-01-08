@@ -81,9 +81,17 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
 
             //Set photo
 //            imgPath = photo.getImgpath();
+
             Bitmap myBitmap = BitmapFactory.decodeFile(photo.getImgpath());
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
-            myImage.setImageBitmap(myBitmap);
+            myBitmap.recycle();
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        myBitmap = BitmapFactory.decodeFile(photo.getImgpath(), options);
+
+        myImage.setImageBitmap(myBitmap);
 
             //Checkbox
             CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkBox);
