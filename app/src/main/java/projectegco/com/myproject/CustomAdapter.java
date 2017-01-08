@@ -82,15 +82,16 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
             //Set photo
 //            imgPath = photo.getImgpath();
 
-            Bitmap myBitmap = BitmapFactory.decodeFile(photo.getThumbnailpath());
+////            Bitmap myBitmap = BitmapFactory.decodeFile(photo.getThumbnailpath());
+        Bitmap myBitmap = null;
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
 
-
+        myImage.setImageResource(R.drawable.egco);
 //        BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inSampleSize = 8;
 //        myBitmap = BitmapFactory.decodeFile(imgPath, options);
 
-        myImage.setImageBitmap(myBitmap);
+////        myImage.setImageBitmap(myBitmap);
 
             //Checkbox
             CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkBox);

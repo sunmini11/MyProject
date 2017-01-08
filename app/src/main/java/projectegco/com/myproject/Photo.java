@@ -15,12 +15,12 @@ public class Photo {
     public long getId(){return id;}
     public void setId(long id){this.id=id;}
 
-    public Photo(long id,String imgpath,String subject_id,String timestamp, String thumbnailpath){
+    public Photo(long id,String imgpath,String subject_id,String timestamp){
         this.id = id;
         this.imgpath = imgpath;
         this.timestamp = timestamp;
         this.subject_id = subject_id;
-        this.thumbnailpath = thumbnailpath;
+//        this.thumbnailpath = thumbnailpath;
     }
 
     public String getImgpath(){return imgpath;}

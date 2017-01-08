@@ -19,7 +19,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_IDPH = "_idph";
     public static final String COLUMN_IMGPATH = "imagePath";
     public static final String COLUMN_TIMESTAMP = "dateTime";
-    public static final String COLUMN_THUMBPATH = "thumbnailpath";
+//    public static final String COLUMN_THUMBPATH = "thumbnailpath";
 
     private static final String DATABASE_NAME = "PhotoDatabase.db"; //database name file SQLite
     private static final int DATABASE_VERSION = 1;
@@ -32,7 +32,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE_PHOTO = "create table "
             + TABLE_PHOTO + "(" + COLUMN_IDPH + " integer primary key autoincrement, "+
             COLUMN_IMGPATH + " text not null, "+ COLUMN_SUBJECTPH_ID + " text not null, "
-            + COLUMN_TIMESTAMP + " text not null, " + COLUMN_THUMBPATH + " text not null);";
+            + COLUMN_TIMESTAMP + " text not null);";
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

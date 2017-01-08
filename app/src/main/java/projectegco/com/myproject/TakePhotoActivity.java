@@ -75,9 +75,10 @@ public class TakePhotoActivity extends AppCompatActivity {
     String filename;
     Uri imageUri;
     String imageurl;
-    Bitmap thumbnail;
+    Bitmap thumbnail,compBitmap;
 
     ContentValues values;
+    byte[] BYTE;
 
 
 
@@ -95,7 +96,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         subTextView = (TextView) findViewById(R.id.subjectTxt);
         subTextView.setText(getSubject);
 
-        FloatingActionButton fabcam = (FloatingActionButton) findViewById(R.id.fabcam);
+        final FloatingActionButton fabcam = (FloatingActionButton) findViewById(R.id.fabcam);
         FloatingActionButton fabsend = (FloatingActionButton) findViewById(R.id.fabok);
 
         if (!hasCamera()) {
@@ -118,12 +119,19 @@ public class TakePhotoActivity extends AppCompatActivity {
         checkboxAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                boolean check = listView.isItemChecked(0);
-                for (int i = 0; i <= data.size(); i++) {
-                    listView.setItemChecked(i, !check);
-                    System.out.println("xxcheck " + " " + i + !check);
+                boolean check = true;
+                if (checkboxAll.isChecked()){
+                    for (int i = 0; i < data.size(); i++) {
+                        data.get(i).setSelected(true);
+                    }
                 }
+                else {
+                    for (int i = 0; i < data.size(); i++) {
+                        data.get(i).setSelected(false);
+                    }
+
+                }
+                photoArrayAdapter.notifyDataSetChanged();
             }
         });
 
@@ -144,7 +152,6 @@ public class TakePhotoActivity extends AppCompatActivity {
                         for (int j = 0; j < data.size(); j++) {
                             System.out.println(j + "xxxxcheck = " + data.get(j).isSelected());
                             if (data.get(j).isSelected()) {
-                                deleteButton.setEnabled(true);
                                 photo1 = photoArrayAdapter.getItem(j);
                                 photoDataSource.deleteResult(data.get(j));
                             }
@@ -188,18 +195,18 @@ public class TakePhotoActivity extends AppCompatActivity {
     //get photo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
-            Bundle extras = data.getExtras();
-            Bitmap photo = (Bitmap)extras.get("data");
+//            Bundle extras = data.getExtras();
+//            Bitmap photo = (Bitmap)extras.get("data");
 
         System.out.println("printfilename22 "+imageUri);
         try {
-                thumbnail = MediaStore.Images.Media.getBitmap(
-                        getContentResolver(), imageUri);
+                thumbnail = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//            compBitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 //                imgView.setImageBitmap(thumbnail);
                 imageurl = getRealPathFromURI(imageUri);
-            System.out.println("printfilename222 "+imageurl);
+//            System.out.println("printfilename222 "+thumbnail.getByteCount()+" comp: "+compBitmap.getByteCount());
 
         } catch (Exception e) {
                 e.printStackTrace();
@@ -209,14 +216,14 @@ public class TakePhotoActivity extends AppCompatActivity {
             String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
 //            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-            Uri tempUri = getImageUri(getApplicationContext(), photo);
+//            Uri tempUri = getImageUri(getApplicationContext(), compBitmap);
 
 //
 //            // CALL THIS METHOD TO GET THE ACTUAL PATH
-            File finalFile = new File(getRealPathFromURI(tempUri));
-            absolutePath = finalFile.getAbsolutePath();
-
-        System.out.println("imgpath: "+absolutePath+" real: "+imageurl);
+//            File finalFile = new File(getRealPathFromURI(tempUri));
+//            absolutePath = finalFile.getAbsolutePath();
+//
+//        System.out.println("imgpath: "+absolutePath+" real: "+imageurl);
 
 
         //Get Current time
@@ -224,10 +231,10 @@ public class TakePhotoActivity extends AppCompatActivity {
             currentDateTime = dateFormat.format(new Date());
 
             // put value into Photo table
-//            photoDataSource.open();
-//            photo1 = photoDataSource.createPhoto(imageurl, getSubjectID, currentDateTime,absolutePath);
-//            photoArrayAdapter.add(photo1);
-//            photoArrayAdapter.notifyDataSetChanged();
+            photoDataSource.open();
+            photo1 = photoDataSource.createPhoto(imageurl, getSubjectID, currentDateTime);
+            photoArrayAdapter.add(photo1);
+            photoArrayAdapter.notifyDataSetChanged();
 
 //            System.out.println("xxfinalfile: "+finalFile);
 //            System.out.println("xxab: "+absolutePath);
@@ -260,9 +267,9 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
         return cursor.getString(column_index);
 
     }
