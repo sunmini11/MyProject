@@ -56,7 +56,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     private ArrayAdapter<Photo> photoArrayAdapter;
     private PhotoDataSource photoDataSource;
     protected List<Photo> data = new ArrayList<>();
-    public static String absolutePath = "path";
+    public String absolutePath;
     String currentDateTime;
     protected static final String selectedSubject = "subject";
     protected static final String idselectedSubject = "subjectid";
@@ -65,7 +65,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     CheckBox checkBox;
     ListView listView;
     ImageView photoView;
-    Photo getFromPhoto;
+    Photo photo1;
 
     boolean isSelectAll = true;
     public static boolean flag = false;
@@ -145,7 +145,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                             System.out.println(j + "xxxxcheck = " + data.get(j).isSelected());
                             if (data.get(j).isSelected()) {
                                 deleteButton.setEnabled(true);
-                                getFromPhoto = photoArrayAdapter.getItem(j);
+                                photo1 = photoArrayAdapter.getItem(j);
                                 photoDataSource.deleteResult(data.get(j));
                             }
                         }
@@ -163,15 +163,6 @@ public class TakePhotoActivity extends AppCompatActivity {
         });
 
     }
-
-
-    private String isCheckedorNot(CheckBox checkbox) {
-        if (checkbox.isChecked())
-            return "is checked";
-        else
-            return "is not checked";
-    }
-
 
     private boolean hasCamera() {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
@@ -197,8 +188,9 @@ public class TakePhotoActivity extends AppCompatActivity {
     //get photo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
-//            Bundle extras = data.getExtras();
-//            Bitmap photo = (Bitmap)extras.get("data");
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap)extras.get("data");
+
         System.out.println("printfilename22 "+imageUri);
         try {
                 thumbnail = MediaStore.Images.Media.getBitmap(
@@ -217,21 +209,25 @@ public class TakePhotoActivity extends AppCompatActivity {
             String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
 //            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-//            Uri tempUri = getImageUri(getApplicationContext(), photo);
+            Uri tempUri = getImageUri(getApplicationContext(), photo);
+
 //
 //            // CALL THIS METHOD TO GET THE ACTUAL PATH
-//            File finalFile = new File(getRealPathFromURI(tempUri));
-//            absolutePath = finalFile.getAbsolutePath();
+            File finalFile = new File(getRealPathFromURI(tempUri));
+            absolutePath = finalFile.getAbsolutePath();
 
-            //Get Current time
+        System.out.println("imgpath: "+absolutePath+" real: "+imageurl);
+
+
+        //Get Current time
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm");
             currentDateTime = dateFormat.format(new Date());
 
             // put value into Photo table
-            photoDataSource.open();
-            Photo photo1 = photoDataSource.createPhoto(imageurl, getSubjectID, currentDateTime);
-            photoArrayAdapter.add(photo1);
-            photoArrayAdapter.notifyDataSetChanged();
+//            photoDataSource.open();
+//            photo1 = photoDataSource.createPhoto(imageurl, getSubjectID, currentDateTime,absolutePath);
+//            photoArrayAdapter.add(photo1);
+//            photoArrayAdapter.notifyDataSetChanged();
 
 //            System.out.println("xxfinalfile: "+finalFile);
 //            System.out.println("xxab: "+absolutePath);

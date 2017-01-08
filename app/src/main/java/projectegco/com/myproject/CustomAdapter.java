@@ -28,7 +28,7 @@ import java.util.List;
 public class CustomAdapter extends ArrayAdapter<Photo>{
     Context context;
     List<Photo> objects;
-    public String imgPath;
+    protected static final String imgPath = "path";
     ImageView photoView;
 
     //Checkbox
@@ -82,14 +82,13 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
             //Set photo
 //            imgPath = photo.getImgpath();
 
-            Bitmap myBitmap = BitmapFactory.decodeFile(photo.getImgpath());
+            Bitmap myBitmap = BitmapFactory.decodeFile(photo.getThumbnailpath());
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
-            myBitmap.recycle();
 
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8;
-        myBitmap = BitmapFactory.decodeFile(photo.getImgpath(), options);
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inSampleSize = 8;
+//        myBitmap = BitmapFactory.decodeFile(imgPath, options);
 
         myImage.setImageBitmap(myBitmap);
 

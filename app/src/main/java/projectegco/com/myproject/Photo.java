@@ -10,21 +10,23 @@ public class Photo {
     private String subject_id;
     private String phId;
     private boolean selected;
+    private String thumbnailpath;
 
     public long getId(){return id;}
     public void setId(long id){this.id=id;}
 
-    public Photo(long id,String imgpath,String subject_id,String timestamp){
+    public Photo(long id,String imgpath,String subject_id,String timestamp, String thumbnailpath){
         this.id = id;
         this.imgpath = imgpath;
         this.timestamp = timestamp;
         this.subject_id = subject_id;
+        this.thumbnailpath = thumbnailpath;
     }
 
     public String getImgpath(){return imgpath;}
     public String getTimestamp(){return timestamp;}
     public String getSubject(){return subject_id;}
-
+    public String getThumbnailpath(){return thumbnailpath;}
 
 
     public Photo(String phId) {
@@ -43,4 +45,7 @@ public class Photo {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+
+
 }

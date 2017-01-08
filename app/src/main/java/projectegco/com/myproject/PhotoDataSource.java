@@ -15,7 +15,8 @@ import java.util.List;
 public class PhotoDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbhelper;
-    private String[] allColumns = {MySQLiteHelper.COLUMN_IDPH, MySQLiteHelper.COLUMN_IMGPATH, MySQLiteHelper.COLUMN_SUBJECTPH_ID, MySQLiteHelper.COLUMN_TIMESTAMP};
+    private String[] allColumns = {MySQLiteHelper.COLUMN_IDPH, MySQLiteHelper.COLUMN_IMGPATH,
+            MySQLiteHelper.COLUMN_SUBJECTPH_ID, MySQLiteHelper.COLUMN_TIMESTAMP,MySQLiteHelper.COLUMN_THUMBPATH};
 
     public PhotoDataSource(Context context){
         dbhelper = new MySQLiteHelper(context);
@@ -29,11 +30,12 @@ public class PhotoDataSource {
         dbhelper.close();
     }
 
-    public Photo createPhoto(String imgpath,String subjectid,String timestamp){
+    public Photo createPhoto(String imgpath,String subjectid,String timestamp,String thumbnail){
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_IMGPATH, imgpath);
         values.put(MySQLiteHelper.COLUMN_SUBJECTPH_ID, subjectid);
         values.put(MySQLiteHelper.COLUMN_TIMESTAMP, timestamp);
+        values.put(MySQLiteHelper.COLUMN_THUMBPATH, thumbnail);
         open();
 
         long insertID = database.insert(MySQLiteHelper.TABLE_PHOTO, null, values);
@@ -65,16 +67,8 @@ public class PhotoDataSource {
     }
 
     public Photo cursorToPhoto(Cursor cursor){ //set value to Photo
-        Photo photo = new Photo(cursor.getLong(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
-        System.out.println("getphoto: "+cursor.getLong(0)+cursor.getString(1)+cursor.getString(2)+cursor.getString(3));
+        Photo photo = new Photo(cursor.getLong(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4));
+        System.out.println("getphoto: "+cursor.getLong(0)+cursor.getString(1)+cursor.getString(2)+cursor.getString(3)+cursor.getString(4));
         return photo;
-    }
-
-    //find selected subject
-    public Cursor findSubject(String sub) {
-
-        Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.TABLE_PHOTO
-                + " WHERE " + MySQLiteHelper.COLUMN_SUBJECTPH_ID + "=" + "'" + sub + "'", null);
-        return cursor;
     }
 }
