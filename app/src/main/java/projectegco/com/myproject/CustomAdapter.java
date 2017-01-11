@@ -28,8 +28,11 @@ import java.util.List;
 public class CustomAdapter extends ArrayAdapter<Photo>{
     Context context;
     List<Photo> objects;
+    Subject subject;
     protected static final String imgPath = "path";
     ImageView photoView;
+    protected static final String idselectedSubject = "subjectid";
+    String imgname;
 
     //Checkbox
     ArrayList<Integer> msgMultiSelected;
@@ -47,10 +50,13 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
 
     @Override
     public View getView(final int position, View view, ViewGroup parent){
+        Intent intent = new Intent(context,MainActivity.class);
+        final String getSubjectID = intent.getStringExtra(idselectedSubject);
 
         ViewHolder viewHolder = null;
 //        if (view == null){
             final Photo photo = objects.get(position);
+
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE); //link with interface
             view = inflater.inflate(R.layout.listview_row,null);
 
@@ -77,7 +83,8 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
             txtDT.setText(photo.getTimestamp());
 
             TextView txtimgname = (TextView)view.findViewById(R.id.imgTextView);
-            txtimgname.setText("img_"+photo.getId());
+            imgname = "img_"+photo.getId()+"_"+getSubjectID;
+            txtimgname.setText(imgname);
 
             //Set photo
 //            imgPath = photo.getImgpath();
