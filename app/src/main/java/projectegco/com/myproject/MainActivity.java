@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TakePhotoActivity.class);
                 intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
                 intent.putExtra(TakePhotoActivity.idselectedSubject,idselectedSubject);
+                intent.putExtra(CustomAdapter.idselectedSubject,idselectedSubject);
                 startActivity(intent);
             }
         });

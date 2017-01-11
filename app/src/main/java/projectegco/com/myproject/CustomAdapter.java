@@ -52,7 +52,7 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
     public View getView(final int position, View view, ViewGroup parent){
         Intent intent = new Intent(context,MainActivity.class);
         final String getSubjectID = intent.getStringExtra(idselectedSubject);
-
+ 
         ViewHolder viewHolder = null;
 //        if (view == null){
             final Photo photo = objects.get(position);

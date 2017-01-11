@@ -14,6 +14,7 @@ import java.io.File;
 public class ZoomPhotoActivity extends AppCompatActivity {
 
     protected static final String ImagePath = "path";
+    protected static final String ImageName = "imagename";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +23,8 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
 
         final String getImgPath = getIntent().getStringExtra(ImagePath);
+//        final String getImgName = getIntent().getStringExtra(ImageName);
+        setTitle("Zoom Photo");
 
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)findViewById(R.id.imageView);
 //        imageView.setImage(ImageSource.resource(R.drawable.egco));

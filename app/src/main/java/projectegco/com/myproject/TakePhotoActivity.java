@@ -93,6 +93,8 @@ public class TakePhotoActivity extends AppCompatActivity {
         final String getSubject = getIntent().getStringExtra(selectedSubject);
         final String getSubjectID = getIntent().getStringExtra(idselectedSubject);
 
+
+
         subTextView = (TextView) findViewById(R.id.subjectTxt);
         subTextView.setText(getSubject);
 
