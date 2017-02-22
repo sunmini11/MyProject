@@ -16,7 +16,8 @@
             android:id="@+id/takePhotoBtn"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:background="#80b4f9" />
+            android:background="@drawable/bg_rounded_corner"
+            android:textColor="#ffffff" />
 
         <Button
             android:layout_width="255dp"
@@ -25,7 +26,8 @@
             android:id="@+id/resultBtn"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:background="#80b4f9" />
+            android:background="@drawable/bg_rounded_corner"
+            android:textColor="#ffffff" />
 
         <Button
             android:layout_width="255dp"
@@ -34,7 +36,8 @@
             android:id="@+id/cancelBtn"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:background="@color/design_textinput_error_color_dark" />
+            android:background="@drawable/bg_rounded_corner_cancel"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

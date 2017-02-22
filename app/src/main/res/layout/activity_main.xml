@@ -10,11 +10,12 @@
     tools:context="projectegco.com.myproject.MainActivity">
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
         android:id="@+id/imageView"
-        android:src="@drawable/egco"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/list"
+        android:layout_marginBottom="58dp"
+        android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -23,30 +24,33 @@
         android:text="Select Subject"
         android:id="@+id/textView"
         android:textSize="16dp"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:textColor="@color/button_material_dark"
+        android:layout_above="@+id/subSpinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
 
     <Spinner
         android:id="@+id/subSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:entries="@array/subject_arrays"
         android:prompt="@string/subject_prompt"
-        android:layout_below="@+id/textView"
+        android:layout_above="@+id/submitButton"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginBottom="126dp"
+        android:spinnerMode="dialog"
+        android:gravity="center"
+        android:background="@drawable/spinnerstyle" />
 
     <Button
-        android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Submit"
         android:id="@+id/submitButton"
-        android:textSize="16dp"
-        android:background="#80b4f9"
-        android:textColor="@color/abc_search_url_text_selected"
+        android:background="@drawable/bg_rounded_corner"
+        android:textColor="#ffffff"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/imageView"
-        android:layout_marginBottom="42dp" />
+        android:layout_centerHorizontal="true"
+        android:textSize="16dp" />
 
 </RelativeLayout>

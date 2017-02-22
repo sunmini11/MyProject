@@ -1,19 +1,33 @@
 package projectegco.com.myproject;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class MainActivity extends Activity {
 
     private Button submitBtn;
     private static Spinner subjectSpinner;
@@ -24,16 +38,19 @@ public class MainActivity extends AppCompatActivity {
     String selectedSubject;
     String idselectedSubject;
     SubjectDataSource subjectDataSource = new SubjectDataSource(this);
-    private ArrayAdapter<Subject> subjectArrayAdapter;
     Subject subject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+//        ActionBar mActionBar = getSupportActionBar();
+//        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009688")));
+
         final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.setTitle("Menu");
+        dialog.setTitle("Please Choose");
         dialog.setContentView(R.layout.menu_dialog);
 
         subjectSpinner = (Spinner) findViewById(R.id.subSpinner);
@@ -53,10 +70,43 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                 System.out.println("subject: "+selectedSubject+" "+idselectedSubject);
 
+                MyCommand myCommand = new MyCommand(getApplicationContext());
+                String url = "http://192.168.1.143/upload/subjectname.php";
+//                                String url = "http://"+ipAddress+"/upload/upload.php";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+//                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(getApplicationContext(), "Error while uploading subject volley error subject", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Error while uploading subject volley error subject. Please try again.");
+                        builder.setNegativeButton("Close",null);
+                        builder.create();
+                        builder.show();
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        //Add data to be send to php server
+                        params.put("subjectname", selectedSubject);
+                        System.out.println("sub12"+selectedSubject);
+                        return params;
+                    }
+                };
+                myCommand.add(stringRequest);
+                myCommand.execute();
+
                 subjectDataSource.open();
                 subject = subjectDataSource.createSubject(selectedSubject,idselectedSubject);
                 subjectDataSource.open();
              //   System.out.println("xxxx: "+subject.getId()+subject.getSubjectId()+subject.getSubjectName());
+
+
 
                 dialog.show();
             }
@@ -68,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TakePhotoActivity.class);
                 intent.putExtra(TakePhotoActivity.selectedSubject,selectedSubject);
                 intent.putExtra(TakePhotoActivity.idselectedSubject,idselectedSubject);
-                intent.putExtra(CustomAdapter.idselectedSubject,idselectedSubject);
+
+
+
                 startActivity(intent);
             }
         });

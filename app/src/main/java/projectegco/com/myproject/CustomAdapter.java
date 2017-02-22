@@ -50,9 +50,9 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
 
     @Override
     public View getView(final int position, View view, ViewGroup parent){
-        Intent intent = new Intent(context,MainActivity.class);
+        Intent intent = ((Activity) context).getIntent();
         final String getSubjectID = intent.getStringExtra(idselectedSubject);
- 
+
         ViewHolder viewHolder = null;
 //        if (view == null){
             final Photo photo = objects.get(position);
@@ -83,8 +83,10 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
             txtDT.setText(photo.getTimestamp());
 
             TextView txtimgname = (TextView)view.findViewById(R.id.imgTextView);
-            imgname = "img_"+photo.getId()+"_"+getSubjectID;
+//            imgname = "EGCO"+getSubjectID+" no."+photo.getId();
+            imgname = "EGCO"+getSubjectID+" pic "+photo.getId();
             txtimgname.setText(imgname);
+            intent.putExtra(TakePhotoActivity.imgName,imgname);
 
             //Set photo
 //            imgPath = photo.getImgpath();
@@ -93,7 +95,7 @@ public class CustomAdapter extends ArrayAdapter<Photo>{
         Bitmap myBitmap = null;
             ImageView myImage = (ImageView)view.findViewById(R.id.photoView);
 
-        myImage.setImageResource(R.drawable.egco);
+        myImage.setImageResource(R.drawable.defaultphoto);
 //        BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inSampleSize = 8;
 //        myBitmap = BitmapFactory.decodeFile(imgPath, options);

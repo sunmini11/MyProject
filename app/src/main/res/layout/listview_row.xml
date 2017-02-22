@@ -11,14 +11,13 @@
         android:text=""
         android:id="@+id/checkBox"
         android:gravity="start"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
         />
 
     <ImageView
-        android:layout_width="100dp"
+        android:layout_width="70dp"
         android:layout_height="50dp"
         android:id="@+id/photoView"
         android:src="@mipmap/ic_launcher"
@@ -38,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text=" img_xx"
             android:id="@+id/imgTextView"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"

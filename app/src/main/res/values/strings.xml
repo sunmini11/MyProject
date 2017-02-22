@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MyProject</string>
     <string name="subject_prompt">Select Subject</string>
+    <string name="btnTakePicture">Capture Image</string>
+    <string name="btnUploadToServer">Upload to Server</string>
 
     <string-array name="subject_arrays">
         <item>EGCO428 Mobile Device Programming</item>

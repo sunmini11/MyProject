@@ -18,6 +18,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_zoom_photo);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set back button
@@ -25,6 +26,8 @@ public class ZoomPhotoActivity extends AppCompatActivity {
         final String getImgPath = getIntent().getStringExtra(ImagePath);
 //        final String getImgName = getIntent().getStringExtra(ImageName);
         setTitle("Zoom Photo");
+
+
 
         SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)findViewById(R.id.imageView);
 //        imageView.setImage(ImageSource.resource(R.drawable.egco));

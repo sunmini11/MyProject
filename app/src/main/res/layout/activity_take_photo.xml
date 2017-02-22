@@ -10,37 +10,47 @@
     tools:context="projectegco.com.myproject.TakePhotoActivity">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout1">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Subject"
-            android:id="@+id/subjectTxt"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="3dp" />
-
-        <CheckBox
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:text="New CheckBox"
-            android:id="@+id/checkBox2"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/textView2"
-            android:layout_marginLeft="5dp" />
+        android:id="@+id/layout1"
+        android:weightSum="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All"
-            android:id="@+id/textView2"
+            android:text="Subject"
+            android:id="@+id/subjectTxt"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp" />
+            android:layout_alignParentStart="true"
+            android:layout_weight="7.33"
+            android:textColor="@color/button_material_dark" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="New CheckBox"
+                android:id="@+id/checkBox2"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/textView2"
+                android:checked="false"
+                android:layout_marginTop="3dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All photos"
+                android:id="@+id/textView2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -49,51 +59,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout1"
-        android:layout_above="@+id/fabcam"
-        android:layout_marginBottom="10dp">
+        android:id="@+id/linearLayout"
+        android:layout_above="@+id/linearLayout2">
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/listView"
             android:layout_alignParentStart="true"
             />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabcam"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:src="@android:drawable/ic_menu_camera"
-        android:scaleType="center"
-        android:onClick="launchCamera"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@android:drawable/ic_menu_send"
-        android:background="#ffffff"
-        android:scaleType="center"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/fabcam" />
+        android:gravity="bottom|center_vertical"
+        android:id="@+id/linearLayout2"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="camera"
+            android:id="@+id/fabcam"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/bg_rounded_corner"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="1dp"
+            android:onClick="launchCamera" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="send"
+            android:id="@+id/fabok"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/fabcam"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bg_rounded_corner"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
 
     <Button
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         android:id="@+id/delBtn"
-        android:background="#e54848"
+        android:background="@drawable/bg_rounded_corner_cancel"
         android:text="Delete"
         android:textColor="#ffffff"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"
+        android:layout_gravity="bottom"
+        android:layout_marginRight="1dp"
+        android:layout_alignTop="@+id/linearLayout2"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
