@@ -20,6 +20,10 @@ android {
     android {
         useLibrary 'org.apache.http.legacy'
     }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
 }
 
 dependencies {

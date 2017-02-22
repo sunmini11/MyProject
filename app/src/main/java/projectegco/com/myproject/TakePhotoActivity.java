@@ -220,7 +220,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                             try {
                                 Bitmap bitmap = PhotoLoader.init().from(data.get(j).getImgpath()).requestSize(512, 512).getBitmap();
                                 final String encodedString = ImageBase64.encode(bitmap);
-                                String url = "http://192.168.1.143/upload/upload.php";
+                                String url = "http://192.168.13.112/upload/upload.php";
 
                                 System.out.println("uu "+j);
 
@@ -228,24 +228,25 @@ public class TakePhotoActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(String response) {
                                         check = check+1;
-                                        System.out.println("uu check "+response+" "+check);
+                                        System.out.println("uu check "+check);
+                                        System.out.println("uu response "+response);
 
 //                                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
                                         if (check==count){
-                                            System.out.println("uu check STOP "+response+" "+check);
+                                            System.out.println("uu check STOP "+check);
 
                                             Toast.makeText(getApplicationContext(), response+" "+count+" photos", Toast.LENGTH_SHORT).show();
                                             AlertDialog.Builder builder = new AlertDialog.Builder(TakePhotoActivity.this);
-                                            builder.setMessage("Successful: "+response+" "+count+" photos");
+                                            builder.setMessage("Response: "+response);
                                             builder.setNegativeButton("Close", null);
                                             builder.create();
                                             builder.show();
                                             flag = "true";
                                             System.out.println("uu FLAG:: "+flag);
 
-                                    ////////////////////////////////Connect MATLAB///////////////////////////////////////////////////
-                                            String url = "http://192.168.1.143/upload/CallConnectMatlab.php";
+                                    ////////////////////////////////Connect MATLAB and send 'flag' to PHP///////////////////////////////////////////////////
+                                            String url = "http://192.168.13.112/upload/CallConnectMatlab.php";
                                             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
@@ -257,25 +258,22 @@ public class TakePhotoActivity extends AppCompatActivity {
                                                 public void onErrorResponse(VolleyError error) {
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(TakePhotoActivity.this);
                                                     System.out.println("uu flag error "+error);
-                                                    builder.setMessage("Error flag. Please try again.");
+                                                    builder.setMessage("Error flag: "+error);
                                                     builder.setNegativeButton("Close",null);
                                                     builder.create();
                                                     builder.show();
 
-
-                                                    if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                                        System.out.println("uu flag heyy 1st");
-                                                    } else if (error instanceof AuthFailureError) {
-                                                        System.out.println("uu flag heyy 2nd");
-                                                    } else if (error instanceof ServerError) {
-                                                        System.out.println("uu flag heyy 3td");
-                                                    } else if (error instanceof NetworkError) {
-                                                        System.out.println("uu flag heyy 4th");
-                                                    } else if (error instanceof ParseError) {
-                                                        System.out.println("uu flag heyy 5th");
-                                                    }
-
-
+//                                                    if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+//                                                        System.out.println("uu flag heyy 1st");
+//                                                    } else if (error instanceof AuthFailureError) {
+//                                                        System.out.println("uu flag heyy 2nd");
+//                                                    } else if (error instanceof ServerError) {
+//                                                        System.out.println("uu flag heyy 3td");
+//                                                    } else if (error instanceof NetworkError) {
+//                                                        System.out.println("uu flag heyy 4th");
+//                                                    } else if (error instanceof ParseError) {
+//                                                        System.out.println("uu flag heyy 5th");
+//                                                    }
                                                 }
                                             }) {
                                                 @Override
@@ -287,13 +285,15 @@ public class TakePhotoActivity extends AppCompatActivity {
                                                     return params;
                                                 }
                                             };
-                                            myFlag.add(stringRequest);
-                                            myFlag.execute();
+
 
                                             stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                                                    12000,
+                                                    50000,
                                                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                                                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                                            myFlag.add(stringRequest);
+                                            myFlag.execute();
                                     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

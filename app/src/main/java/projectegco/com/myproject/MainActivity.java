@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
                 System.out.println("subject: "+selectedSubject+" "+idselectedSubject);
 
                 MyCommand myCommand = new MyCommand(getApplicationContext());
-                String url = "http://192.168.1.143/upload/subjectname.php";
+                String url = "http://192.168.13.112/upload/subjectname.php";
 //                                String url = "http://"+ipAddress+"/upload/upload.php";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
